@@ -55,10 +55,3 @@ module "beats" {
   vpc_id = module.vpc.vpc_id
   subnet_ids = module.dynamic_subnets.public_subnet_ids
 }
-
-//module "monitoring-platform" {
-//  source = "./modules/monitoring-platform"
-//  vpc_id = module.vpc.vpc_id
-//  backend-min-size = 1
-//  subnet_ids = module.dynamic_subnets.public_subnet_ids
-//}
