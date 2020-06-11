@@ -1,4 +1,4 @@
-resource "aws_security_group" "tester" {
+resource "aws_security_group" "pttp-logging-spike" {
   name        = "fe-ecs-out"
   description = "Allow the ECS agent to talk to the ECS endpoints"
   vpc_id      = "${var.vpc_id}"

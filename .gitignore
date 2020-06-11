@@ -40,4 +40,4 @@ VpnCerts
 *.ovpn
 **/pki/*
 *.DS_Store
-.terraform
+.terraform.back

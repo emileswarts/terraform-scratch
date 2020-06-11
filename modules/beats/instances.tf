@@ -4,7 +4,7 @@ resource "aws_instance" "radius" {
   subnet_id     = var.subnet_ids[1]
 
   vpc_security_group_ids = [
-    "${aws_security_group.tester.id}"
+    "${aws_security_group.pttp-logging-spike.id}"
   ]
   key_name               = aws_key_pair.bastion_public_key_pair.key_name
   associate_public_ip_address = true
@@ -58,12 +58,11 @@ state_file = /var/lib/awslogs/agent-state
 [/var/log/dummy-log]
 file = /var/log/dummy-log
 log_group_name = /var/log/dummy-log
-log_stream_name = {cluster}/{container_instance_id}
+log_stream_name = {instance_id}/{hostname}
 datetime_format = %b %d %H:%M:%S
 EOF
 
 echo "done cloudwatch log config" >> ~/whatever
-
 
 --==BOUNDARY==
 MIME-Version: 1.0
@@ -71,32 +70,12 @@ Content-Type: text/x-shellscript; charset="us-ascii"
 #!/bin/bash
 region=eu-west-2
 sed -i -e "s/region = us-east-1/region = $region/g" /etc/awslogs/awscli.conf
+systemctl start awslogsd
+systemctl enable awslogsd.service
 
---==BOUNDARY==
-MIME-Version: 1.0
-Content-Type: text/upstart-job; charset="us-ascii"
-
-#upstart-job
-description "Configure and start CloudWatch Logs agent on Amazon"
-author "Amazon Web Services"
-
-script
-	set -x
-	exec 2>>/var/log/messages
-
-	until curl -s http://localhost:51678/v1/metadata; do
-        echo "Sleeping" >> /var/log/dummy-log
-		sleep 1
-	done
-        echo "done looping" >> ~/whatever
-
-	service awslogs start
-	chkconfig awslogs on
-end script
 echo "done script and done" >> ~/whatever
 
---==BOUNDARY==--
-
+--==BOUNDARY==
 DATA
 
   tags = {

@@ -209,6 +209,21 @@ resource "aws_iam_role" "codebuild" {
 EOF
 }
 
+resource "aws_iam_role" "codebuild-cross-account" {
+  name = "codebuild"
+
+  assume_role_policy = <<EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": {
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": "arn:aws:iam::PRODUCTION-ACCOUNT-ID:role/UpdateApp"
+    }
+  }
+EOF
+}
+
 resource "aws_iam_role_policy" "codebuild" {
   role = "${aws_iam_role.codebuild.name}"
 
